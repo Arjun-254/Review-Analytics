@@ -6,7 +6,7 @@ st.set_page_config(
     page_icon="📊",
 )
 
-st.title("App Analytics Dashboard")
+st.title("Google Play Reviews Analytics Dashboard")
 
 st.sidebar.success("Select an option above.")
 
