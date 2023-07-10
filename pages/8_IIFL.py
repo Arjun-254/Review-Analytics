@@ -47,28 +47,24 @@ def get_reviews():
         # Adjust the remaining count based on the already scraped reviews
         remaining_reviews = MAX_REVIEWS - len(g_reviews)
         count = min(remaining_reviews, count)
-    return g_reviews
+    g_df = pd.DataFrame(np.array(g_reviews), columns=['review'])
+    g_df2 = g_df.join(pd.DataFrame(g_df.pop('review').tolist()))
+
+    g_df2.drop(columns={'userImage', 'reviewCreatedVersion'}, inplace=True)
+    g_df2.rename(columns={'score': 'rating', 'userName': 'user_name', 'reviewId': 'review_id', 'content': 'review_description', 'at': 'review_date',
+                          'replyContent': 'developer_response', 'repliedAt': 'developer_response_date', 'thumbsUpCount': 'thumbs_up'}, inplace=True)
+    g_df2.insert(loc=0, column='source', value='Google Play')
+    g_df2.insert(loc=3, column='review_title', value=None)
+
+    df = g_df2
+
+    df.drop('review_title', axis=1, inplace=True)
+    df.drop('developer_response', axis=1, inplace=True)
+    df.drop('developer_response_date', axis=1, inplace=True)
+    return df
 
 
-g_reviews = get_reviews()
-
-
-g_df = pd.DataFrame(np.array(g_reviews), columns=['review'])
-g_df2 = g_df.join(pd.DataFrame(g_df.pop('review').tolist()))
-
-g_df2.drop(columns={'userImage', 'reviewCreatedVersion'}, inplace=True)
-g_df2.rename(columns={'score': 'rating', 'userName': 'user_name', 'reviewId': 'review_id', 'content': 'review_description', 'at': 'review_date',
-             'replyContent': 'developer_response', 'repliedAt': 'developer_response_date', 'thumbsUpCount': 'thumbs_up'}, inplace=True)
-g_df2.insert(loc=0, column='source', value='Google Play')
-g_df2.insert(loc=3, column='review_title', value=None)
-
-
-df = g_df2
-
-
-df.drop('review_title', axis=1, inplace=True)
-df.drop('developer_response', axis=1, inplace=True)
-df.drop('developer_response_date', axis=1, inplace=True)
+df = get_reviews()
 
 stop_words = {'iifl', 'please',
               'able', 'bank', 'app', 'good', 'nice', 'best'}

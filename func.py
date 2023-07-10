@@ -31,10 +31,6 @@ def analyze_reviews(df, custom_stop_words):
         st.session_state['end_date'] = datetime.now().date()
         st.session_state['rating_filter'] = "All"
         st.session_state['version'] = "All"
-    nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('wordnet')
-
     # df = pd.read_csv(csv_file)
     # df.drop(columns=['Unnamed: 0'], inplace=True)
 
@@ -70,10 +66,13 @@ def analyze_reviews(df, custom_stop_words):
     min_review_date = pd.to_datetime(df['review_date']).min().date()
     st.title('Custom Search by Date Range')
     pd.set_option('display.width', 1000)
-    start_date = st.date_input(
-        'Select start date', value=st.session_state['start_date'],  min_value=min_review_date, max_value=datetime.now().date())
-    end_date = st.date_input(
-        'Select end date', value=st.session_state['end_date'], min_value=min_review_date, max_value=datetime.now().date())
+    col1, col2 = st.columns(2)
+    with col1:
+        start_date = st.date_input(
+            'Select start date', value=st.session_state['start_date'],  min_value=min_review_date, max_value=datetime.now().date())
+    with col2:
+        end_date = st.date_input(
+            'Select end date', value=st.session_state['end_date'], min_value=min_review_date, max_value=datetime.now().date())
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     df['review_date'] = pd.to_datetime(df['review_date'])
@@ -93,7 +92,8 @@ def analyze_reviews(df, custom_stop_words):
     unique_versions.append("All")
     unique_versions = df_cleaned['appVersion'].drop_duplicates()
     if len(unique_versions) > 0:
-        unique_versions = pd.Series(["All"]+unique_versions.tolist())
+        unique_versions = pd.Series(
+            ["All"]+unique_versions.tolist()).sort_values(ascending=False)
     selected_version = st.selectbox(
         'Select a Version:', unique_versions.tolist(), index=0)
 
