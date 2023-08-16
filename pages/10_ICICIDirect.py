@@ -16,6 +16,10 @@ from func import analyze_reviews
 
 # Streamlit app to be full screen
 # st.set_page_config(layout="wide")
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 
 st.markdown('<h1 style="font-size: 70px; color: #E3142D;"> ICICI Direct </h1>',
             unsafe_allow_html=True)
